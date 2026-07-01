@@ -1,0 +1,3 @@
+* text=auto
+wezterm.lua text eol=lf
+setup.js text eol=lf

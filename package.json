@@ -1,0 +1,13 @@
+{
+  "name": "wezterm-conf",
+  "version": "1.0.0",
+  "description": "My WezTerm configuration with a cross-platform, idempotent setup script",
+  "private": true,
+  "scripts": {
+    "setup": "node setup.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brett-fisher-research/wezterm-conf.git"
+  }
+}
