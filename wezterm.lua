@@ -41,17 +41,20 @@ config.keys = {
   { key = 'z', mods = 'LEADER', action = act.TogglePaneZoomState },
   { key = 'o', mods = 'LEADER', action = act.ActivatePaneDirection 'Next' },
 
-  -- Vim-style pane navigation
-  { key = 'h', mods = 'LEADER', action = act.ActivatePaneDirection 'Left' },
-  { key = 'j', mods = 'LEADER', action = act.ActivatePaneDirection 'Down' },
-  { key = 'k', mods = 'LEADER', action = act.ActivatePaneDirection 'Up' },
-  { key = 'l', mods = 'LEADER', action = act.ActivatePaneDirection 'Right' },
+  -- Vim-style pane navigation: direct Ctrl+h/j/k/l, no leader (tmux-navigator muscle
+  -- memory; trades away Ctrl+l clear-screen, same as tmux did)
+  { key = 'h', mods = 'CTRL', action = act.ActivatePaneDirection 'Left' },
+  { key = 'j', mods = 'CTRL', action = act.ActivatePaneDirection 'Down' },
+  { key = 'k', mods = 'CTRL', action = act.ActivatePaneDirection 'Up' },
+  { key = 'l', mods = 'CTRL', action = act.ActivatePaneDirection 'Right' },
 
-  -- Vim-style pane resizing
-  { key = 'H', mods = 'LEADER|SHIFT', action = act.AdjustPaneSize { 'Left', 5 } },
-  { key = 'J', mods = 'LEADER|SHIFT', action = act.AdjustPaneSize { 'Down', 5 } },
-  { key = 'K', mods = 'LEADER|SHIFT', action = act.AdjustPaneSize { 'Up', 5 } },
-  { key = 'L', mods = 'LEADER|SHIFT', action = act.AdjustPaneSize { 'Right', 5 } },
+  -- Vim-style pane resizing, repeatable like tmux `bind -r`: leader+H/J/K/L does the
+  -- first resize and enters resize mode, then bare H/J/K/L keep resizing. Mode expires
+  -- 1s after the last press (tmux repeat-time 1000) or on Escape.
+  { key = 'H', mods = 'LEADER|SHIFT', action = act.Multiple { act.AdjustPaneSize { 'Left', 5 }, act.ActivateKeyTable { name = 'resize_pane', one_shot = false, timeout_milliseconds = 1000 } } },
+  { key = 'J', mods = 'LEADER|SHIFT', action = act.Multiple { act.AdjustPaneSize { 'Down', 5 }, act.ActivateKeyTable { name = 'resize_pane', one_shot = false, timeout_milliseconds = 1000 } } },
+  { key = 'K', mods = 'LEADER|SHIFT', action = act.Multiple { act.AdjustPaneSize { 'Up', 5 }, act.ActivateKeyTable { name = 'resize_pane', one_shot = false, timeout_milliseconds = 1000 } } },
+  { key = 'L', mods = 'LEADER|SHIFT', action = act.Multiple { act.AdjustPaneSize { 'Right', 5 }, act.ActivateKeyTable { name = 'resize_pane', one_shot = false, timeout_milliseconds = 1000 } } },
 
   -- Copy mode (vi keys by default: v to select, y to yank, Esc to cancel)
   { key = '[', mods = 'LEADER', action = act.ActivateCopyMode },
@@ -84,6 +87,17 @@ config.keys = {
 
   -- Reload config, same muscle memory as prefix+r in tmux
   { key = 'r', mods = 'LEADER', action = act.ReloadConfiguration },
+}
+
+-- Resize mode: bare H/J/K/L repeat while active (entered via leader+H/J/K/L above)
+config.key_tables = {
+  resize_pane = {
+    { key = 'H', mods = 'SHIFT', action = act.AdjustPaneSize { 'Left', 5 } },
+    { key = 'J', mods = 'SHIFT', action = act.AdjustPaneSize { 'Down', 5 } },
+    { key = 'K', mods = 'SHIFT', action = act.AdjustPaneSize { 'Up', 5 } },
+    { key = 'L', mods = 'SHIFT', action = act.AdjustPaneSize { 'Right', 5 } },
+    { key = 'Escape', action = act.PopKeyTable },
+  },
 }
 
 -- Leader+1..9 jumps to tab, like prefix+number in tmux
