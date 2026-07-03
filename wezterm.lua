@@ -131,4 +131,12 @@ end
 config.color_scheme = 'Tokyo Night'
 config.window_background_opacity = 1.0
 
+-- JetBrainsMono Nerd Font ships the full Nerd Font v3 glyph set (nvim-web-devicons
+-- etc.); WezTerm's bundled symbols fallback lacks the newer codepoints. Installed by
+-- `npm run setup` on Windows. font_with_fallback keeps hosts without the font on
+-- their platform defaults instead of breaking.
+config.font = wezterm.font_with_fallback {
+  'JetBrainsMono Nerd Font',
+}
+
 return config
